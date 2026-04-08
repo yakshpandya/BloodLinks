@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find diagnostic labs for blood testing near you — BloodLinks." />
+  <title>Find Diagnostic Labs — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i></a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><span class="current">Diagnostic Labs</span></nav>
+      <div class="page-title"><h1>Find <span>Diagnostic Labs</span></h1><p>Locate NABL-accredited labs for blood testing, group detection, and cross-matching near you.</p></div>
+    </div>
+  </section>
+  <main class="main-content">
+    <div class="container">
+      <div class="listing-filters">
+        <div class="filter-group" style="flex:2">
+          <label class="filter-label"><i class="fas fa-search"></i> Search</label>
+          <input type="text" class="form-input" id="search" placeholder="Search by name, city or services..." oninput="render()" />
+        </div>
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-tag"></i> Type</label>
+          <select class="form-select" id="type-filter" onchange="render()">
+            <option value="">All Types</option>
+            <option>Private</option><option>Government</option><option>Hospital-based</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-certificate"></i> Accreditation</label>
+          <select class="form-select" id="nabl-filter" onchange="render()">
+            <option value="">Any</option>
+            <option value="true">NABL Only</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:1rem;font-weight:700;color:var(--white)">All Diagnostic Labs</h2>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span id="result-count" style="font-size:0.83rem;color:var(--text-muted)">Loading...</span>
+          <a href="add_lab.html" class="action-btn primary" style="font-size:0.82rem;padding:8px 14px"><i class="fas fa-plus"></i> Add Lab</a>
+        </div>
+      </div>
+      <div class="listing-grid" id="listing-grid">
+        <div class="card"><div class="skeleton" style="height:200px;border-radius:10px"></div></div>
+        <div class="card"><div class="skeleton" style="height:200px;border-radius:10px"></div></div>
+        <div class="card"><div class="skeleton" style="height:200px;border-radius:10px"></div></div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: 'labs' });
+    var ALL = [];
+
+    function render() {
+      var q = document.getElementById('search').value.toLowerCase();
+      var type = document.getElementById('type-filter').value;
+      var nabl = document.getElementById('nabl-filter').value;
+      var filtered = ALL.filter(function(l) {
+        var matchQ = !q || (l.name||'').toLowerCase().includes(q) || (l.location||'').toLowerCase().includes(q) || (l.city||'').toLowerCase().includes(q) || (l.services||'').toLowerCase().includes(q);
+        var matchT = !type || (l.type||'') === type;
+        var matchN = nabl === '' ? true : (l.nabl === true || l.nabl === 'true');
+        return matchQ && matchT && matchN;
+      });
+      document.getElementById('result-count').textContent = 'Showing ' + filtered.length + ' of ' + ALL.length;
+      var grid = document.getElementById('listing-grid');
+      if (!filtered.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)"><i class="fas fa-flask" style="font-size:3rem;opacity:0.2;margin-bottom:16px;display:block"></i><p>No labs found. <a href="add_lab.html" style="color:var(--primary-light)">Register your lab!</a></p></div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(function(l, i) {
+        var nablBadge = (l.nabl === true || l.nabl === 'true') ?
+          '<span style="font-size:0.7rem;font-weight:700;color:#5a9fff;background:rgba(90,159,255,0.1);border:1px solid rgba(90,159,255,0.2);padding:3px 9px;border-radius:50px"><i class="fas fa-certificate" style="margin-right:3px"></i>NABL</span>' : '';
+        return '<div class="listing-card" style="animation-delay:' + (i*0.05) + 's">' +
+          '<div class="lc-header"><span class="lc-badge ' + (l.type||'').toLowerCase() + '">' + (l.type||'') + '</span>' + nablBadge +
+          '<i class="fas fa-flask" style="color:rgba(255,255,255,0.08);font-size:1.4rem;margin-left:auto"></i></div>' +
+          '<div class="lc-name">' + l.name + '</div>' +
+          '<div class="lc-location"><i class="fas fa-map-marker-alt"></i>' + (l.location || l.city || '') + '</div>' +
+          '<div style="font-size:0.8rem;color:var(--text-secondary);margin:8px 0"><i class="fas fa-clock" style="color:var(--primary);margin-right:6px"></i>' + (l.hours||'') + '</div>' +
+          '<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:14px"><i class="fas fa-vials" style="color:var(--primary);margin-right:6px"></i>' + (Array.isArray(l.services) ? l.services.join(', ') : (l.services||'')).substring(0,70) + '…</div>' +
+          '<div class="lc-footer">' +
+          '<a href="tel:' + (l.phone||'') + '" class="lc-phone"><i class="fas fa-phone"></i>' + (l.phone||'N/A') + '</a>' +
+          '<a href="register.html" class="action-btn primary" style="font-size:0.78rem;padding:7px 14px">Book Test</a>' +
+          '</div></div>';
+      }).join('');
+    }
+    ALL = BLDb.getLabs();
+    render();
+  </script>
+</body>
+</html>

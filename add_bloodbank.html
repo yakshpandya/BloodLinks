@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Register your blood bank on BloodLinks — India's leading blood donation network." />
+  <title>Register Blood Bank — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i></a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><span class="current">Register Blood Bank</span></nav>
+      <div class="page-title"><h1>Register Your <span>Blood Bank</span></h1><p>List your blood bank on BloodLinks and reach thousands of donors and patients in need.</p></div>
+    </div>
+  </section>
+  <main class="info-page">
+    <div class="container">
+      <div class="form-wrapper wide">
+        <div class="form-top">
+          <div class="form-icon"><i class="fas fa-hospital-alt"></i></div>
+          <h1>Blood Bank Registration</h1>
+          <p>Fill in the details below. Our team will review and approve your listing within 48 hours.</p>
+        </div>
+        <div class="form-body">
+          <h3 class="form-section-title"><i class="fas fa-info-circle"></i> Basic Information</h3>
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label"><i class="fas fa-hospital"></i> Blood Bank Name *</label>
+              <input type="text" class="form-input" id="bb-name" placeholder="Full official name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-tag"></i> Category *</label>
+              <select class="form-select" id="bb-cat">
+                <option value="">Select category</option>
+                <option>Government</option><option>Private</option><option>Trust</option><option>NGO</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-id-badge"></i> License Number *</label>
+              <input type="text" class="form-input" id="bb-license" placeholder="Govt. license number" />
+            </div>
+          </div>
+          <h3 class="form-section-title"><i class="fas fa-map-marker-alt"></i> Location & Contact</h3>
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label"><i class="fas fa-map-signed"></i> Full Address *</label>
+              <input type="text" class="form-input" id="bb-address" placeholder="Street address" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-city"></i> City *</label>
+              <input type="text" class="form-input" id="bb-city" placeholder="City" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-map"></i> State *</label>
+              <select class="form-select" id="bb-state">
+                <option value="">Select state</option>
+                <option>Gujarat</option><option>Maharashtra</option><option>Rajasthan</option>
+                <option>Delhi</option><option>Karnataka</option><option>Tamil Nadu</option>
+                <option>Uttar Pradesh</option><option>West Bengal</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-phone"></i> Phone *</label>
+              <input type="tel" class="form-input" id="bb-phone" placeholder="Contact number" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-clock"></i> Working Hours</label>
+              <input type="text" class="form-input" id="bb-hours" placeholder="e.g. 24 Hours / 9am-9pm" />
+            </div>
+          </div>
+          <h3 class="form-section-title"><i class="fas fa-cog"></i> Services & Account</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-check-square"></i> Services Offered</label>
+              <div class="checkbox-grid">
+                <label class="checkbox-row"><input type="checkbox" id="svc-wb"> Whole Blood</label>
+                <label class="checkbox-row"><input type="checkbox" id="svc-rbc"> Red Blood Cells</label>
+                <label class="checkbox-row"><input type="checkbox" id="svc-plt"> Platelets</label>
+                <label class="checkbox-row"><input type="checkbox" id="svc-ffp"> Fresh Frozen Plasma</label>
+                <label class="checkbox-row"><input type="checkbox" id="svc-cryo"> Cryoprecipitate</label>
+                <label class="checkbox-row"><input type="checkbox" id="svc-ap"> Apheresis</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-envelope"></i> Email (for login) *</label>
+              <input type="email" class="form-input" id="bb-email" placeholder="Official email address" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-lock"></i> Create Password *</label>
+              <input type="password" class="form-input" id="bb-pass" placeholder="Minimum 6 characters" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-lock"></i> Confirm Password *</label>
+              <input type="password" class="form-input" id="bb-cpass" placeholder="Repeat password" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+              <textarea class="form-textarea" id="bb-desc" placeholder="Brief description about your blood bank, specialties, and services..."></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-row"><input type="checkbox" id="bb-agree"> I confirm that this blood bank is licensed and agree to BloodLinks' <a href="terms.html">Terms of Service</a></label>
+          </div>
+          <button class="form-submit" onclick="handleSubmit()"><i class="fas fa-hospital-alt"></i> Register Blood Bank</button>
+          <div class="form-link">Already registered? <a href="admin.html">Login to Dashboard</a></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: 'blood-banks' });
+    function g(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
+    function cb(id) { return document.getElementById(id) ? document.getElementById(id).checked : false; }
+
+    function handleSubmit() {
+      var name = g('bb-name'), cat = g('bb-cat'), lic = g('bb-license');
+      var addr = g('bb-address'), city = g('bb-city'), state = g('bb-state'), phone = g('bb-phone');
+      var email = g('bb-email'), pass = g('bb-pass'), cpass = g('bb-cpass');
+
+      if (!name || !cat || !lic || !addr || !city || !state || !phone || !email || !pass) {
+        BLDb.toast('Please fill in all required fields.', 'error'); return;
+      }
+      if (pass.length < 6) { BLDb.toast('Password must be at least 6 characters.', 'error'); return; }
+      if (pass !== cpass) { BLDb.toast('Passwords do not match.', 'error'); return; }
+      if (!cb('bb-agree')) { BLDb.toast('Please accept the terms and conditions.', 'error'); return; }
+      if (BLDb.getBankByEmail(email)) { BLDb.toast('An account with this email already exists. Please login.', 'warning'); return; }
+
+      var svc = [];
+      if (cb('svc-wb')) svc.push('Whole Blood');
+      if (cb('svc-rbc')) svc.push('Red Blood Cells');
+      if (cb('svc-plt')) svc.push('Platelets');
+      if (cb('svc-ffp')) svc.push('Fresh Frozen Plasma');
+      if (cb('svc-cryo')) svc.push('Cryoprecipitate');
+      if (cb('svc-ap')) svc.push('Apheresis');
+
+      var bank = BLDb.addBloodBank({
+        name: name, category: cat, license: lic,
+        address: addr, city: city, state: state, phone: phone,
+        email: email, password: pass,
+        hours: g('bb-hours') || '24 Hours',
+        services: svc, desc: g('bb-desc'),
+        type: 'bloodbank', location: city + ', ' + state,
+      });
+
+      BLDb.toast('🎉 Blood bank registered! Login to access your dashboard.', 'success');
+      setTimeout(function () { window.location.href = 'admin.html'; }, 2000);
+    }
+  </script>
+</body>
+</html>

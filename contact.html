@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact BloodLinks — Get in touch for support, partnerships, and queries." />
+  <title>Contact Us — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i></a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><span class="current">Contact Us</span></nav>
+      <div class="page-title"><h1>Contact <span>Us</span></h1><p>We're here to help. Reach out with questions, partnership inquiries, or feedback.</p></div>
+    </div>
+  </section>
+  <main class="info-page">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Form -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-icon"><i class="fas fa-paper-plane"></i></div>
+            <div><h2>Send us a Message</h2><p>We usually respond within 24 hours</p></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-user"></i> Your Name</label>
+            <input type="text" class="form-input" placeholder="Full name" id="contact-name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" class="form-input" placeholder="your@email.com" id="contact-email" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-phone"></i> Phone (Optional)</label>
+            <input type="tel" class="form-input" placeholder="+91 XXXXX XXXXX" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-tag"></i> Subject</label>
+            <select class="form-select">
+              <option value="">Select subject</option>
+              <option>General Inquiry</option><option>Blood Bank Registration</option>
+              <option>Donor Support</option><option>Technical Issue</option><option>Partnership</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-comment"></i> Message</label>
+            <textarea class="form-textarea" id="contact-msg" placeholder="Write your message here..."></textarea>
+          </div>
+          <button class="form-submit" onclick="handleContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </div>
+        <!-- Info -->
+        <div>
+          <div class="contact-info-card">
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div><div class="contact-info-label">Address</div><div class="contact-info-value">A-303, Southend Homes, Neelkanth Apartments, Opp Gyan Vihar University, Jagatpura, Jaipur - 302017</div></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
+              <div><div class="contact-info-label">Phone</div><div class="contact-info-value"><a href="tel:+916375798641">+91 6375798641</a></div></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+              <div><div class="contact-info-label">Email</div><div class="contact-info-value"><a href="mailto:thebloodlinks@gmail.com">thebloodlinks@gmail.com</a></div></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i class="fas fa-clock"></i></div>
+              <div><div class="contact-info-label">Support Hours</div><div class="contact-info-value">Monday – Friday: 9:00 AM – 6:00 PM<br>Saturday: 10:00 AM – 2:00 PM</div></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:20px">
+            <h3 style="font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:16px">Emergency Blood Help</h3>
+            <p style="font-size:0.87rem;color:var(--text-secondary);margin-bottom:16px">For urgent blood requests, call our 24/7 helpline or register your request online immediately.</p>
+            <a href="register.html" class="action-btn primary" style="display:flex"><i class="fas fa-first-aid"></i> Request Blood Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: '' });
+    function handleContact() {
+      const n = document.getElementById('contact-name').value;
+      if (!n) { alert('Please fill in your name.'); return; }
+      alert('✅ Message sent! We\'ll get back to you within 24 hours.');
+    }
+  </script>
+</body>
+</html>

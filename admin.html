@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Blood Bank Admin Login — BloodLinks." />
+  <title>Blood Bank Login — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <main class="login-wrapper">
+    <div class="form-wrapper" style="width:100%;max-width:440px">
+      <div class="form-top">
+        <div class="form-icon"><i class="fas fa-hospital-alt"></i></div>
+        <h1>Blood Bank Login</h1>
+        <p>Access your blood bank management dashboard</p>
+      </div>
+      <div class="form-body">
+        <div style="background:rgba(224,30,55,0.07);border:1px solid rgba(224,30,55,0.2);border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:0.83rem;color:var(--text-secondary)">
+          <i class="fas fa-info-circle" style="color:var(--primary)"></i> 
+          Not registered? <a href="add_bloodbank.html" style="color:var(--primary-light);font-weight:600">Register your blood bank</a> first.
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-envelope"></i> Registered Email *</label>
+          <input type="email" class="form-input" id="admin-email" placeholder="Enter registered email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-lock"></i> Password *</label>
+          <div style="position:relative">
+            <input type="password" class="form-input" id="admin-pass" placeholder="Enter password" style="padding-right:44px" />
+            <button type="button" onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem"><i class="fas fa-eye" id="pass-icon"></i></button>
+          </div>
+        </div>
+        <button class="form-submit" onclick="handleAdminLogin()"><i class="fas fa-sign-in-alt"></i> Login to Dashboard</button>
+        <div class="form-divider">or</div>
+        <div class="form-link">Not registered yet? <a href="add_bloodbank.html">Register Blood Bank</a></div>
+        <div class="form-link" style="margin-top:8px">Are you a donor? <a href="signin.html">Donor Login</a></div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: '' });
+    if (BLDb.currentUser() && BLDb.currentUser().type === 'bloodbank') window.location.href = 'bank_dashboard.html';
+
+    function togglePass() {
+      var inp = document.getElementById('admin-pass');
+      var icon = document.getElementById('pass-icon');
+      if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+      else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+    }
+
+    function handleAdminLogin() {
+      var email = document.getElementById('admin-email').value.trim();
+      var pass = document.getElementById('admin-pass').value;
+      if (!email || !pass) { BLDb.toast('Please fill in all fields.', 'error'); return; }
+
+      var bank = BLDb.getBankByEmail(email);
+      if (!bank) { BLDb.toast('No blood bank found with this email. Please register first.', 'error'); return; }
+      if (bank.password !== pass) { BLDb.toast('Incorrect password.', 'error'); return; }
+
+      var user = Object.assign({}, bank, { type: 'bloodbank' });
+      BLDb.login(user);
+      BLDb.toast('Welcome back, ' + bank.name + '!', 'success');
+      setTimeout(function () { window.location.href = 'bank_dashboard.html'; }, 1200);
+    }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Enter') handleAdminLogin(); });
+  </script>
+</body>
+</html>

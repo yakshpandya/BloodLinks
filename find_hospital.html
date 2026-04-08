@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find hospitals with blood transfusion units near you — BloodLinks." />
+  <title>Find Hospitals — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i></a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><span class="current">Find Hospitals</span></nav>
+      <div class="page-title"><h1>Find <span>Hospitals</span></h1><p>Locate hospitals with blood transfusion units and blood storage facilities near you.</p></div>
+    </div>
+  </section>
+  <main class="main-content">
+    <div class="container">
+      <div class="listing-filters">
+        <div class="filter-group" style="flex:2">
+          <label class="filter-label"><i class="fas fa-search"></i> Search</label>
+          <input type="text" class="form-input" id="search" placeholder="Search by name or city..." oninput="render()" />
+        </div>
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-tag"></i> Type</label>
+          <select class="form-select" id="type-filter" onchange="render()">
+            <option value="">All Types</option>
+            <option>Government</option><option>Private</option><option>Trust</option><option>Mission</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-tint"></i> Blood Bank</label>
+          <select class="form-select" id="bb-filter" onchange="render()">
+            <option value="">Any</option>
+            <option value="true">Has Blood Bank</option>
+            <option value="false">No Blood Bank</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:1rem;font-weight:700;color:var(--white)">All Hospitals</h2>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span id="result-count" style="font-size:0.83rem;color:var(--text-muted)">Loading...</span>
+          <a href="add_hospital.html" class="action-btn primary" style="font-size:0.82rem;padding:8px 14px"><i class="fas fa-plus"></i> Add Hospital</a>
+        </div>
+      </div>
+      <div class="listing-grid" id="listing-grid">
+        <div class="card"><div class="skeleton" style="height:180px;border-radius:10px"></div></div>
+        <div class="card"><div class="skeleton" style="height:180px;border-radius:10px"></div></div>
+        <div class="card"><div class="skeleton" style="height:180px;border-radius:10px"></div></div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: 'hospitals' });
+    var ALL = [];
+
+    function render() {
+      var q = document.getElementById('search').value.toLowerCase();
+      var type = document.getElementById('type-filter').value;
+      var bb = document.getElementById('bb-filter').value;
+      var filtered = ALL.filter(function(h) {
+        var matchQ = !q || (h.name||'').toLowerCase().includes(q) || (h.location||'').toLowerCase().includes(q) || (h.city||'').toLowerCase().includes(q);
+        var matchT = !type || (h.type||'') === type;
+        var matchBB = bb === '' ? true : (bb === 'true' ? h.bloodBank : !h.bloodBank);
+        return matchQ && matchT && matchBB;
+      });
+      document.getElementById('result-count').textContent = 'Showing ' + filtered.length + ' of ' + ALL.length;
+      var grid = document.getElementById('listing-grid');
+      if (!filtered.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)"><i class="fas fa-hospital" style="font-size:3rem;opacity:0.2;margin-bottom:16px;display:block"></i><p>No hospitals found. <a href="add_hospital.html" style="color:var(--primary-light)">Register one!</a></p></div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(function(h, i) {
+        return '<div class="listing-card" style="animation-delay:' + (i*0.05) + 's">' +
+          '<div class="lc-header"><span class="lc-badge ' + (h.type||'').toLowerCase() + '">' + (h.type||'') + '</span>' +
+          (h.bloodBank ? '<span style="font-size:0.72rem;font-weight:700;color:#2ecc71;background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.25);padding:3px 9px;border-radius:50px"><i class="fas fa-tint" style="margin-right:4px"></i>Blood Bank</span>' : '') +
+          '<i class="fas fa-hospital" style="color:rgba(255,255,255,0.1);font-size:1.5rem;margin-left:auto"></i></div>' +
+          '<div class="lc-name">' + h.name + '</div>' +
+          '<div class="lc-location"><i class="fas fa-map-marker-alt"></i>' + (h.location || h.city || '') + '</div>' +
+          '<div class="lc-desc">' + (h.desc||'').substring(0,90) + (h.desc&&h.desc.length>90?'…':'') + '</div>' +
+          '<div class="lc-footer">' +
+          '<a href="tel:' + (h.phone||'') + '" class="lc-phone"><i class="fas fa-phone"></i>' + (h.phone||'N/A') + '</a>' +
+          '<a href="register.html" class="action-btn primary" style="font-size:0.78rem;padding:7px 14px">Request Blood</a>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    // Load data
+    ALL = BLDb.getHospitals();
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find upcoming blood donation camps near you — BloodLinks." />
+  <title>Find Blood Camps — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i></a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><span class="current">Blood Camps</span></nav>
+      <div class="page-title"><h1>Find <span>Blood Camps</span></h1><p>Upcoming blood donation camps. Walk in and save a life today.</p></div>
+    </div>
+  </section>
+  <main class="main-content">
+    <div class="container">
+      <div class="listing-filters">
+        <div class="filter-group" style="flex:2">
+          <label class="filter-label"><i class="fas fa-search"></i> Search</label>
+          <input type="text" class="form-input" id="search" placeholder="Search by name, city, or organiser..." oninput="render()" />
+        </div>
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-tag"></i> Type</label>
+          <select class="form-select" id="type-filter" onchange="render()">
+            <option value="">All Types</option>
+            <option>Club</option><option>NGO</option><option>Educational Institution</option><option>Corporate</option><option>Government</option><option>Religious</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:1rem;font-weight:700;color:var(--white)">Upcoming Camps</h2>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span id="result-count" style="font-size:0.83rem;color:var(--text-muted)">Loading...</span>
+          <a href="add_camps.html" class="action-btn primary" style="font-size:0.82rem;padding:8px 14px"><i class="fas fa-plus"></i> Add Camp</a>
+        </div>
+      </div>
+      <div class="listing-grid" id="listing-grid">
+        <div class="card"><div class="skeleton" style="height:200px;border-radius:10px"></div></div>
+        <div class="card"><div class="skeleton" style="height:200px;border-radius:10px"></div></div>
+        <div class="card"><div class="skeleton" style="height:200px;border-radius:10px"></div></div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: 'camps' });
+    var ALL = [];
+
+    function fmtCampDate(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr);
+      return d.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function isFuture(dateStr) {
+      if (!dateStr) return true;
+      var d = new Date(dateStr); d.setHours(23,59,59,999);
+      return d >= new Date();
+    }
+
+    function render() {
+      var q = document.getElementById('search').value.toLowerCase();
+      var type = document.getElementById('type-filter').value;
+      var filtered = ALL.filter(function(c) {
+        if (!isFuture(c.date)) return false;
+        var matchQ = !q || (c.name||'').toLowerCase().includes(q) || (c.location||'').toLowerCase().includes(q) || (c.city||'').toLowerCase().includes(q) || (c.org||'').toLowerCase().includes(q);
+        var matchT = !type || (c.type||'') === type;
+        return matchQ && matchT;
+      });
+      var past = ALL.filter(function(c) { return !isFuture(c.date); });
+      document.getElementById('result-count').textContent = 'Showing ' + filtered.length + ' upcoming' + (past.length ? ' (' + past.length + ' past)' : '');
+
+      var grid = document.getElementById('listing-grid');
+      if (!filtered.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)"><i class="fas fa-campground" style="font-size:3rem;opacity:0.2;margin-bottom:16px;display:block"></i><p>No upcoming camps found. <a href="add_camps.html" style="color:var(--primary-light)">Organise one!</a></p></div>';
+        return;
+      }
+      // Sort by date ascending
+      filtered.sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+      grid.innerHTML = filtered.map(function(c, i) {
+        var daysLeft = Math.ceil((new Date(c.date) - new Date()) / 86400000);
+        var urgencyColor = daysLeft <= 3 ? '#e74c3c' : daysLeft <= 7 ? '#ffc107' : '#2ecc71';
+        return '<div class="listing-card" style="animation-delay:' + (i*0.05) + 's">' +
+          '<div class="lc-header"><span class="lc-badge">' + (c.type||'') + '</span>' +
+          '<span style="font-size:0.72rem;font-weight:700;color:' + urgencyColor + ';background:rgba(255,255,255,0.04);border:1px solid ' + urgencyColor + '44;padding:3px 9px;border-radius:50px">' + (daysLeft === 0 ? 'Today!' : 'In ' + daysLeft + ' day' + (daysLeft===1?'':'s')) + '</span>' +
+          '<i class="fas fa-campground" style="color:rgba(255,255,255,0.08);font-size:1.4rem;margin-left:auto"></i></div>' +
+          '<div class="lc-name">' + c.name + '</div>' +
+          '<div class="lc-location"><i class="fas fa-map-marker-alt"></i>' + (c.location || c.city || '') + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:4px;margin:10px 0;font-size:0.82rem;color:var(--text-secondary)">' +
+          '<div><i class="fas fa-calendar-alt" style="color:var(--primary);margin-right:6px;width:14px"></i>' + fmtCampDate(c.date) + '</div>' +
+          '<div><i class="fas fa-clock" style="color:var(--primary);margin-right:6px;width:14px"></i>' + (c.time||'') + '</div>' +
+          '<div><i class="fas fa-building" style="color:var(--primary);margin-right:6px;width:14px"></i>' + (c.org||'') + '</div>' +
+          '</div>' +
+          '<div class="lc-desc">' + (c.desc||'').substring(0,80) + (c.desc&&c.desc.length>80?'…':'') + '</div>' +
+          '<div class="lc-footer">' +
+          '<a href="tel:' + (c.phone||'') + '" class="lc-phone"><i class="fas fa-phone"></i>' + (c.phone||'') + '</a>' +
+          '<a href="register.html" class="action-btn primary" style="font-size:0.78rem;padding:7px 14px">Register to Donate</a>' +
+          '</div></div>';
+      }).join('');
+    }
+    ALL = BLDb.getCamps();
+    render();
+  </script>
+</body>
+</html>

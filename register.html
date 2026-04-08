@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Register as a blood donor or request blood on BloodLinks." />
+  <title>Donate / Request Blood — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <main class="form-page">
+    <div class="container">
+      <div class="form-wrapper wide" style="max-width:700px;margin:0 auto">
+        <div class="form-top">
+          <div class="form-icon" id="form-icon"><i class="fas fa-tint"></i></div>
+          <h1 id="form-title">Donor Registration</h1>
+          <p id="form-subtitle">Register to donate blood or raise a blood request. Join thousands of life-savers.</p>
+        </div>
+        <div class="form-body">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-user-tag"></i> I want to</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="type" value="donate" checked onchange="toggleType('donate')"> <i class="fas fa-tint" style="color:var(--primary)"></i> Donate Blood</label>
+              <label class="radio-option"><input type="radio" name="type" value="request" onchange="toggleType('request')"> <i class="fas fa-first-aid" style="color:#5a9fff"></i> Request Blood</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-user"></i> First Name *</label>
+              <input type="text" class="form-input" id="fname" placeholder="Enter first name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-user"></i> Last Name *</label>
+              <input type="text" class="form-input" id="lname" placeholder="Enter last name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-phone"></i> Mobile Number *</label>
+              <input type="tel" class="form-input" id="phone" placeholder="+91 XXXXX XXXXX" maxlength="13" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-envelope"></i> Email *</label>
+              <input type="email" class="form-input" id="email" placeholder="your@email.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-birthday-cake"></i> Date of Birth *</label>
+              <input type="date" class="form-input" id="dob" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-venus-mars"></i> Gender *</label>
+              <select class="form-select" id="gender">
+                <option value="">Select gender</option>
+                <option>Male</option><option>Female</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-tint"></i> Blood Group *</label>
+            <div class="blood-group-selector">
+              <div class="bg-option"><input type="radio" name="bg" id="bg-ap" value="A+"><label for="bg-ap">A+</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-an" value="A-"><label for="bg-an">A-</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-bp" value="B+"><label for="bg-bp">B+</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-bn" value="B-"><label for="bg-bn">B-</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-op" value="O+"><label for="bg-op">O+</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-on" value="O-"><label for="bg-on">O-</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-abp" value="AB+"><label for="bg-abp">AB+</label></div>
+              <div class="bg-option"><input type="radio" name="bg" id="bg-abn" value="AB-"><label for="bg-abn">AB-</label></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-map-marker-alt"></i> City *</label>
+              <input type="text" class="form-input" id="city" placeholder="Your city" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-map"></i> State *</label>
+              <select class="form-select" id="state">
+                <option value="">Select state</option>
+                <option>Gujarat</option><option>Maharashtra</option><option>Rajasthan</option>
+                <option>Delhi</option><option>Karnataka</option><option>Tamil Nadu</option>
+                <option>Uttar Pradesh</option><option>West Bengal</option><option>Other</option>
+              </select>
+            </div>
+            <!-- Request-only field -->
+            <div class="form-group full" id="urgency-group" style="display:none">
+              <label class="form-label"><i class="fas fa-exclamation-triangle"></i> Urgency Level</label>
+              <select class="form-select" id="urgency">
+                <option value="normal">Normal (within 48 hours)</option>
+                <option value="urgent">Urgent (within 24 hours)</option>
+                <option value="critical">Critical (within a few hours)</option>
+              </select>
+            </div>
+            <div class="form-group full" id="hospital-group" style="display:none">
+              <label class="form-label"><i class="fas fa-hospital"></i> Hospital Name</label>
+              <input type="text" class="form-input" id="hospital" placeholder="Name of the hospital where blood is needed" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-lock"></i> Password *</label>
+              <input type="password" class="form-input" id="password" placeholder="Create a password (min 6 chars)" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-lock"></i> Confirm Password *</label>
+              <input type="password" class="form-input" id="confirm-password" placeholder="Repeat your password" />
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox-row">
+              <input type="checkbox" id="agree" />
+              <label for="agree">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a></label>
+            </div>
+          </div>
+          <button class="form-submit" id="submit-btn" onclick="handleSubmit()">
+            <i class="fas fa-tint" id="submit-icon"></i> <span id="submit-text">Register as Donor</span>
+          </button>
+          <div class="form-link">Already have an account? <a href="signin.html">Login here</a></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: 'blood-banks' });
+    var currentType = 'donate';
+
+    function toggleType(type) {
+      currentType = type;
+      if (type === 'donate') {
+        document.getElementById('form-title').textContent = 'Donor Registration';
+        document.getElementById('form-subtitle').textContent = 'Register to donate blood and save up to 3 lives.';
+        document.getElementById('form-icon').innerHTML = '<i class="fas fa-tint"></i>';
+        document.getElementById('urgency-group').style.display = 'none';
+        document.getElementById('hospital-group').style.display = 'none';
+        document.getElementById('submit-icon').className = 'fas fa-tint';
+        document.getElementById('submit-text').textContent = 'Register as Donor';
+      } else {
+        document.getElementById('form-title').textContent = 'Blood Request';
+        document.getElementById('form-subtitle').textContent = 'Submit a blood request. Our team will connect you with available donors.';
+        document.getElementById('form-icon').innerHTML = '<i class="fas fa-first-aid"></i>';
+        document.getElementById('urgency-group').style.display = 'block';
+        document.getElementById('hospital-group').style.display = 'block';
+        document.getElementById('submit-icon').className = 'fas fa-first-aid';
+        document.getElementById('submit-text').textContent = 'Submit Blood Request';
+      }
+    }
+
+    function getVal(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
+
+    function handleSubmit() {
+      var fname = getVal('fname'), lname = getVal('lname');
+      var phone = getVal('phone'), email = getVal('email');
+      var dob = getVal('dob'), gender = getVal('gender');
+      var city = getVal('city'), state = getVal('state');
+      var pass = getVal('password'), cpass = getVal('confirm-password');
+      var bg = document.querySelector('input[name="bg"]:checked');
+
+      if (!fname || !lname || !phone || !email || !dob || !gender || !city || !state) {
+        BLDb.toast('Please fill in all required fields.', 'error'); return;
+      }
+      if (!bg) { BLDb.toast('Please select a blood group.', 'error'); return; }
+      if (!pass || pass.length < 6) { BLDb.toast('Password must be at least 6 characters.', 'error'); return; }
+      if (pass !== cpass) { BLDb.toast('Passwords do not match.', 'error'); return; }
+      if (!document.getElementById('agree').checked) { BLDb.toast('Please accept the terms and conditions.', 'error'); return; }
+
+      if (currentType === 'donate') {
+        if (BLDb.getDonorByEmail(email)) { BLDb.toast('An account with this email already exists. Please login.', 'warning'); return; }
+        var donor = BLDb.addDonor({ firstName: fname, lastName: lname, name: fname + ' ' + lname, phone: phone, email: email, dob: dob, gender: gender, bloodGroup: bg.value, city: city, state: state, password: pass, type: 'donor' });
+        BLDb.login(donor);
+        BLDb.toast('Registration successful! Welcome to BloodLinks, ' + fname + '!', 'success');
+        setTimeout(function () { window.location.href = 'dashboard.html'; }, 1500);
+      } else {
+        var urgency = getVal('urgency') || 'normal';
+        var hospital = getVal('hospital');
+        var req = BLDb.addRequest({ name: fname + ' ' + lname, phone: phone, email: email, bloodGroup: bg.value, city: city, state: state, urgency: urgency, hospital: hospital });
+        BLDb.toast('Blood request submitted! ID: #BL' + req.id + '. We will contact you shortly.', 'success');
+        setTimeout(function () { window.location.href = 'find_bloodbank.html'; }, 2500);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Register your diagnostic lab on BloodLinks." />
+  <title>Register Diagnostic Lab — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i></a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><a href="find_lab.html">Labs</a><span><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span><span class="current">Register Lab</span></nav>
+      <div class="page-title"><h1>Register <span>Diagnostic Lab</span></h1><p>List your lab to help patients find blood testing and type matching services near them.</p></div>
+    </div>
+  </section>
+  <main class="info-page">
+    <div class="container">
+      <div class="form-wrapper wide">
+        <div class="form-top"><div class="form-icon"><i class="fas fa-flask"></i></div><h1>Lab Registration</h1><p>Your lab will appear on the Find Labs page immediately after submission.</p></div>
+        <div class="form-body">
+          <div class="form-row">
+            <div class="form-group full"><label class="form-label"><i class="fas fa-flask"></i> Lab Name *</label><input type="text" class="form-input" id="l-name" placeholder="Full official lab name" /></div>
+            <div class="form-group"><label class="form-label"><i class="fas fa-tag"></i> Type *</label><select class="form-select" id="l-type"><option value="">Select type</option><option>Private</option><option>Government</option><option>Hospital-based</option></select></div>
+            <div class="form-group"><label class="form-label"><i class="fas fa-phone"></i> Phone *</label><input type="tel" class="form-input" id="l-phone" placeholder="Contact number" /></div>
+            <div class="form-group"><label class="form-label"><i class="fas fa-city"></i> City *</label><input type="text" class="form-input" id="l-city" placeholder="City" /></div>
+            <div class="form-group"><label class="form-label"><i class="fas fa-map"></i> State *</label><select class="form-select" id="l-state"><option>Gujarat</option><option>Maharashtra</option><option>Rajasthan</option><option>Delhi</option><option>Karnataka</option><option>Other</option></select></div>
+            <div class="form-group"><label class="form-label"><i class="fas fa-clock"></i> Operating Hours *</label><input type="text" class="form-input" id="l-hours" placeholder="e.g. 7:00 AM - 10:00 PM" /></div>
+            <div class="form-group full"><label class="form-label"><i class="fas fa-vials"></i> Services (comma-separated) *</label><input type="text" class="form-input" id="l-svc" placeholder="e.g. CBC, Blood Group, Cross-matching, HbA1c" /></div>
+            <div class="form-group full"><label class="form-label"><i class="fas fa-check-square"></i> NABL Accredited?</label><div class="radio-group"><label class="radio-option"><input type="radio" name="l-nabl" value="true" checked> Yes</label><label class="radio-option"><input type="radio" name="l-nabl" value="false"> No</label></div></div>
+            <div class="form-group full"><label class="form-label"><i class="fas fa-align-left"></i> Description *</label><textarea class="form-textarea" id="l-desc" placeholder="Brief description about your lab, accreditations, and specialties..."></textarea></div>
+          </div>
+          <button class="form-submit" onclick="handleSubmit()"><i class="fas fa-flask"></i> Register Lab</button>
+          <div class="form-link">View all labs: <a href="find_lab.html">Find Labs</a></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: 'labs' });
+    function g(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
+    function handleSubmit() {
+      var name = g('l-name'), type = g('l-type'), phone = g('l-phone'), city = g('l-city'), state = g('l-state'), hours = g('l-hours'), svc = g('l-svc'), desc = g('l-desc');
+      if (!name || !type || !phone || !city || !state || !hours || !svc || !desc) { BLDb.toast('Please fill in all required fields.', 'error'); return; }
+      var nabl = document.querySelector('input[name="l-nabl"]:checked');
+      BLDb.addLab({ name: name, type: type, phone: phone, city: city, state: state, location: city + ', ' + state, hours: hours, services: svc, nabl: nabl && nabl.value === 'true', desc: desc });
+      BLDb.toast('Lab registered successfully! It now appears on Find Labs.', 'success');
+      setTimeout(function () { window.location.href = 'find_lab.html'; }, 1800);
+    }
+  </script>
+</body>
+</html>

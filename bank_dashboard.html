@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Blood Bank Management Dashboard — BloodLinks" />
+  <title>Blood Bank Dashboard — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="extra.css" />
+  <style>
+    .dash-grid { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start; }
+    .dash-sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); color: var(--text-secondary); font-size: 0.88rem; transition: var(--transition); border: 1px solid transparent; cursor: pointer; }
+    .dash-sidebar-link:hover, .dash-sidebar-link.active { background: rgba(224,30,55,0.09); border-color: rgba(224,30,55,0.2); color: var(--primary-light); }
+    .dash-sidebar-link i { color: var(--primary); width: 18px; }
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; align-items: center; gap: 16px; }
+    .stat-card .stat-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .stat-card .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--white); line-height: 1; }
+    .stat-card .stat-lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+    .req-item { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .req-badge { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; text-transform: uppercase; }
+    .req-badge.pending { background: rgba(255,193,7,0.15); color: #ffc107; border: 1px solid rgba(255,193,7,0.3); }
+    .req-badge.fulfilled { background: rgba(46,204,113,0.12); color: #2ecc71; border: 1px solid rgba(46,204,113,0.25); }
+    .bg-inventory { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .bg-inv-item { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+    .bg-inv-type { font-size: 1.1rem; font-weight: 800; color: var(--white); }
+    .bg-inv-level { font-size: 0.78rem; margin-top: 6px; }
+    .bg-inv-bar { height: 4px; border-radius: 2px; margin-top: 8px; }
+    .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+    .empty-state i { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
+    @media (max-width:900px) { .dash-grid { grid-template-columns:1fr; } .stat-cards { grid-template-columns:1fr 1fr; } .bg-inventory { grid-template-columns:repeat(4,1fr); } }
+  </style>
+</head>
+<body class="page-shell">
+  <div id="preloader"><div class="preloader-inner"><div class="preloader-icon">🩸</div><div class="preloader-text">BloodLinks</div></div></div>
+  <div id="bl-nav"></div>
+  <section class="hero-section" style="padding:28px 0">
+    <div class="container">
+      <div class="page-title" style="margin:0"><h1>Blood Bank <span>Dashboard</span></h1></div>
+    </div>
+  </section>
+  <main class="main-content">
+    <div class="container">
+      <div class="dash-grid">
+        <!-- Sidebar -->
+        <div>
+          <div class="card" id="profile-card" style="margin-bottom:20px"></div>
+          <div class="card">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <a class="dash-sidebar-link active" onclick="showTab('overview',this)"><i class="fas fa-tachometer-alt"></i> Overview</a>
+              <a class="dash-sidebar-link" onclick="showTab('requests',this)"><i class="fas fa-first-aid"></i> Blood Requests</a>
+              <a class="dash-sidebar-link" onclick="showTab('inventory',this)"><i class="fas fa-tint"></i> Blood Inventory</a>
+              <a class="dash-sidebar-link" href="find_bloodbank.html"><i class="fas fa-search"></i> View My Listing</a>
+              <a class="dash-sidebar-link" onclick="BLDb.logout()" style="margin-top:12px;color:#e74c3c;border-color:rgba(231,76,60,0.2)"><i class="fas fa-sign-out-alt" style="color:#e74c3c"></i> Logout</a>
+            </div>
+          </div>
+        </div>
+        <!-- Main Content -->
+        <div>
+          <div id="tab-overview">
+            <div class="stat-cards">
+              <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(224,30,55,0.1);color:var(--primary)"><i class="fas fa-first-aid"></i></div>
+                <div><div class="stat-num" id="stat-all">0</div><div class="stat-lbl">Total Requests</div></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(255,193,7,0.1);color:#ffc107"><i class="fas fa-clock"></i></div>
+                <div><div class="stat-num" id="stat-pending">0</div><div class="stat-lbl">Pending</div></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(46,204,113,0.1);color:#2ecc71"><i class="fas fa-check-circle"></i></div>
+                <div><div class="stat-num" id="stat-done">0</div><div class="stat-lbl">Fulfilled</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-header-icon"><i class="fas fa-bolt"></i></div><div><h2>Quick Actions</h2></div></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px">
+                <a href="find_bloodbank.html" class="action-btn secondary" style="display:flex;justify-content:center"><i class="fas fa-search"></i> View All Banks</a>
+                <a href="register.html" class="action-btn primary" style="display:flex;justify-content:center"><i class="fas fa-tint"></i> Accept Donation</a>
+                <a href="contact.html" class="action-btn secondary" style="display:flex;justify-content:center"><i class="fas fa-envelope"></i> Contact Support</a>
+                <a href="add_bloodbank.html" class="action-btn secondary" style="display:flex;justify-content:center"><i class="fas fa-edit"></i> Update Profile</a>
+              </div>
+            </div>
+          </div>
+          <!-- Requests Tab -->
+          <div id="tab-requests" style="display:none">
+            <div class="card">
+              <div class="card-header"><div class="card-header-icon"><i class="fas fa-first-aid"></i></div><div><h2>All Blood Requests</h2><p>Manage incoming blood requests</p></div></div>
+              <div style="margin-top:16px" id="req-list"></div>
+            </div>
+          </div>
+          <!-- Inventory Tab -->
+          <div id="tab-inventory" style="display:none">
+            <div class="card">
+              <div class="card-header"><div class="card-header-icon"><i class="fas fa-tint"></i></div><div><h2>Blood Inventory</h2><p>Current stock levels for all blood groups</p></div></div>
+              <div class="bg-inventory" style="margin-top:16px" id="inventory-grid"></div>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+                <p style="font-size:0.83rem;color:var(--text-muted)"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Inventory levels are simulated. In production, these would sync with your hospital management system.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="bl-footer"></div>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script>
+    BloodLinks.initPage({ active: '' });
+    var user = BLDb.currentUser();
+    if (!user || user.type !== 'bloodbank') window.location.href = 'admin.html';
+
+    function showTab(name, el) {
+      ['overview','requests','inventory'].forEach(function(t) {
+        document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
+      });
+      document.querySelectorAll('.dash-sidebar-link').forEach(function(l) { l.classList.remove('active'); });
+      if (el) el.classList.add('active');
+    }
+
+    function init() {
+      if (!user) return;
+      var reqs = BLDb.getRequests();
+      var pending = reqs.filter(function(r) { return r.status === 'pending'; });
+      var done = reqs.filter(function(r) { return r.status === 'fulfilled'; });
+
+      document.getElementById('stat-all').textContent = reqs.length;
+      document.getElementById('stat-pending').textContent = pending.length;
+      document.getElementById('stat-done').textContent = done.length;
+
+      document.getElementById('profile-card').innerHTML =
+        '<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">' +
+        '<div style="width:52px;height:52px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏥</div>' +
+        '<div><div style="font-weight:700;color:var(--white);font-size:0.95rem">' + (user.name || 'Blood Bank') + '</div>' +
+        '<div style="font-size:0.78rem;color:var(--primary-light);margin-top:2px">' + (user.category || 'Registered') + '</div></div></div>' +
+        '<div style="font-size:0.82rem;color:var(--text-muted)">' +
+        '<div style="margin-bottom:6px"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:6px"></i>' + (user.city || user.location || '') + (user.state ? ', ' + user.state : '') + '</div>' +
+        '<div><i class="fas fa-envelope" style="color:var(--primary);margin-right:6px"></i>' + (user.email || '') + '</div></div>';
+
+      // Requests list
+      var rl = document.getElementById('req-list');
+      if (!reqs.length) {
+        rl.innerHTML = '<div class="empty-state"><i class="fas fa-first-aid"></i><p>No blood requests yet.</p></div>';
+      } else {
+        rl.innerHTML = reqs.slice().reverse().map(function(r) {
+          return '<div class="req-item">' +
+            '<div><div style="font-weight:700;color:var(--white)">' + r.bloodGroup + ' needed' +
+            (r.urgency === 'critical' ? ' <span style="color:#e74c3c;font-size:0.75rem"> ● CRITICAL</span>' : r.urgency === 'urgent' ? ' <span style="color:#ffc107;font-size:0.75rem">⚡ URGENT</span>' : '') + '</div>' +
+            '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">' + (r.name || r.phone || '') + ' · ' + BLDb.fmtDate(r.createdAt) + ' · ' + r.city + '</div></div>' +
+            '<div style="display:flex;align-items:center;gap:8px">' +
+            '<span class="req-badge ' + r.status + '">' + r.status + '</span>' +
+            (r.status === 'pending' ? '<button onclick="fulfil(' + r.id + ')" style="padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:0.78rem;cursor:pointer">Fulfil</button>' : '') +
+            '</div></div>';
+        }).join('');
+      }
+
+      // Inventory
+      var bgs = ['A+','A-','B+','B-','O+','O-','AB+','AB-'];
+      var levels = [72, 35, 63, 18, 89, 22, 47, 14];
+      document.getElementById('inventory-grid').innerHTML = bgs.map(function(g, i) {
+        var lvl = levels[i];
+        var col = lvl > 60 ? '#2ecc71' : lvl > 30 ? '#ffc107' : '#e74c3c';
+        return '<div class="bg-inv-item">' +
+          '<div class="bg-inv-type">' + g + '</div>' +
+          '<div class="bg-inv-level" style="color:' + col + '">' + lvl + '%</div>' +
+          '<div class="bg-inv-bar" style="background:rgba(255,255,255,0.05)"><div style="height:100%;width:' + lvl + '%;background:' + col + ';border-radius:2px"></div></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function fulfil(id) {
+      BLDb.updateRequestStatus(id, 'fulfilled');
+      BLDb.toast('Request #BL' + id + ' marked as fulfilled.', 'success');
+      init();
+    }
+
+    init();
+  </script>
+</body>
+</html>
