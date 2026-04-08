@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BloodLinks Super Admin Login — Secure Administrative Access" />
+  <title>Super Admin Login — BloodLinks</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #e01e37;
+      --primary-dark: #a4122a;
+      --primary-light: #ff4d6d;
+      --primary-glow: rgba(224, 30, 55, 0.35);
+      --bg-dark: #070710;
+      --bg-card: #0e0e1a;
+      --bg-surface: #13131f;
+      --border: rgba(255, 255, 255, 0.07);
+      --text-primary: #f1f1f5;
+      --text-secondary: #8888a8;
+      --text-muted: #44445a;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: floatOrb 12s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: var(--primary);
+      top: -150px;
+      left: -100px;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: #3d007a;
+      top: 50%;
+      right: -100px;
+      animation-delay: -4s;
+    }
+
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary-dark);
+      bottom: -100px;
+      left: 30%;
+      animation-delay: -8s;
+    }
+
+    @keyframes floatOrb {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(30px, -30px) scale(1.05);
+      }
+
+      66% {
+        transform: translate(-20px, 20px) scale(0.95);
+      }
+    }
+
+    /* Grid Pattern */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* Login Card */
+    .login-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 460px;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: rgba(14, 14, 26, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 48px 44px;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 36px;
+      text-align: center;
+    }
+
+    .logo-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 8px 32px var(--primary-glow), 0 0 0 1px rgba(224, 30, 55, 0.2);
+      margin-bottom: 20px;
+      position: relative;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 8px 32px var(--primary-glow), 0 0 0 1px rgba(224, 30, 55, 0.2);
+      }
+
+      50% {
+        box-shadow: 0 8px 50px var(--primary-glow), 0 0 0 1px rgba(224, 30, 55, 0.4), 0 0 60px rgba(224, 30, 55, 0.1);
+      }
+    }
+
+    .logo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(224, 30, 55, 0.1);
+      border: 1px solid rgba(224, 30, 55, 0.25);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .logo-area h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-area p {
+      font-size: 0.87rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+
+    .form-label i {
+      color: var(--primary);
+      font-size: 0.75rem;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: rgba(224, 30, 55, 0.5);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 0 3px rgba(224, 30, 55, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .toggle-pass:hover {
+      color: var(--text-secondary);
+    }
+
+    .form-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      box-shadow: 0 4px 20px rgba(224, 30, 55, 0.3);
+      letter-spacing: 0.3px;
+    }
+
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(224, 30, 55, 0.5);
+    }
+
+    .form-submit:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 20px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .divider span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .hint-box {
+      background: rgba(224, 30, 55, 0.06);
+      border: 1px solid rgba(224, 30, 55, 0.15);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .hint-box strong {
+      color: var(--primary-light);
+    }
+
+    .hint-box i {
+      color: var(--primary);
+      margin-right: 6px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--text-secondary);
+    }
+
+    .back-link i {
+      font-size: 0.75rem;
+    }
+
+    /* Error Message */
+    .error-msg {
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #e74c3c;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="logo-area">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-tag"><i class="fas fa-crown"></i> Super Admin</div>
+        <h1>Admin Control Panel</h1>
+        <p>Restricted access. Authorized personnel only.</p>
+      </div>
+
+      <div class="error-msg" id="error-msg">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="error-text">Invalid credentials.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-user-shield"></i> Admin Username</label>
+        <div class="input-wrap">
+          <input type="text" class="form-input" id="admin-user" placeholder="Enter admin username" autocomplete="off" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-lock"></i> Admin Password</label>
+        <div class="input-wrap">
+          <input type="password" class="form-input" id="admin-pass" placeholder="Enter admin password" />
+          <button type="button" class="toggle-pass" onclick="togglePass()" id="pass-toggle">
+            <i class="fas fa-eye" id="pass-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button class="form-submit" id="login-btn" onclick="handleLogin()">
+        <i class="fas fa-shield-alt"></i> Access Admin Panel
+      </button>
+
+      <div class="divider"><span>credentials</span></div>
+
+      <div class="hint-box">
+        <i class="fas fa-info-circle"></i>
+        Default: Username <strong>admin</strong> · Password <strong>bloodlinks@2024</strong><br>
+        <small style="color:var(--text-muted)">Change these in admin-panel/admin-db.js</small>
+      </div>
+
+      <a href="../index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to BloodLinks
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_CREDS = { username: 'admin', password: 'bloodlinks@2024' };
+
+    function togglePass() {
+      var inp = document.getElementById('admin-pass');
+      var icon = document.getElementById('pass-icon');
+      if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+      else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+    }
+
+    function showError(msg) {
+      var el = document.getElementById('error-msg');
+      document.getElementById('error-text').textContent = msg;
+      el.style.display = 'flex';
+      el.style.animation = 'none';
+      requestAnimationFrame(() => { el.style.animation = 'shake 0.4s ease'; });
+    }
+
+    // Add shake animation
+    var style = document.createElement('style');
+    style.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }';
+    document.head.appendChild(style);
+
+    function handleLogin() {
+      var user = document.getElementById('admin-user').value.trim();
+      var pass = document.getElementById('admin-pass').value;
+      if (!user || !pass) { showError('Please fill in all fields.'); return; }
+      if (user !== ADMIN_CREDS.username || pass !== ADMIN_CREDS.password) {
+        showError('Invalid username or password. Access denied.');
+        document.getElementById('admin-pass').value = '';
+        return;
+      }
+      // Set session
+      sessionStorage.setItem('bl_admin_auth', JSON.stringify({ username: user, loginAt: new Date().toISOString() }));
+      document.getElementById('login-btn').innerHTML = '<i class="fas fa-check"></i> Access Granted! Redirecting...';
+      document.getElementById('login-btn').style.background = 'linear-gradient(135deg,#2ecc71,#1a8a4a)';
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+    }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Enter') handleLogin(); });
+
+    // Check already logged in
+    if (sessionStorage.getItem('bl_admin_auth')) { window.location.href = 'dashboard.html'; }
+  </script>
+</body>
+
+</html>

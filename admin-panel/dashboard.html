@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BloodLinks Super Admin Dashboard — Full System Control" />
+  <title>Admin Dashboard — BloodLinks Control Panel</title>
+  <link rel="icon" href="https://bloodlinks.in/uploads/app/fav.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div id="preloader">
+    <div class="preloader-inner">
+      <div class="pre-icon">🛡️</div>
+      <div class="pre-text">BloodLinks Admin</div>
+      <div class="pre-bar"><div class="pre-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sb-brand">
+        <div class="sb-logo">🩸</div>
+        <div>
+          <div class="sb-name">BloodLinks</div>
+          <div class="sb-sub">Admin Panel</div>
+        </div>
+      </div>
+      <button class="sb-collapse" id="sb-collapse" onclick="toggleSidebar()" title="Collapse sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="sidebar-admin-badge">
+      <div class="admin-avatar">A</div>
+      <div class="admin-info">
+        <div class="admin-name" id="admin-name-display">Admin</div>
+        <div class="admin-role"><i class="fas fa-circle" style="font-size:6px;color:#2ecc71"></i> Super Admin</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a class="nav-link active" data-tab="dashboard" onclick="showTab('dashboard',this)">
+        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+        <div class="nav-indicator"></div>
+      </a>
+      <a class="nav-link" data-tab="donors" onclick="showTab('donors',this)">
+        <i class="fas fa-users"></i><span>Donors</span>
+        <span class="nav-badge" id="badge-donors">0</span>
+      </a>
+      <a class="nav-link" data-tab="bloodbanks" onclick="showTab('bloodbanks',this)">
+        <i class="fas fa-hospital-alt"></i><span>Blood Banks</span>
+        <span class="nav-badge" id="badge-banks">0</span>
+      </a>
+      <a class="nav-link" data-tab="requests" onclick="showTab('requests',this)">
+        <i class="fas fa-first-aid"></i><span>Blood Requests</span>
+        <span class="nav-badge urgent" id="badge-requests">0</span>
+      </a>
+      <a class="nav-link" data-tab="hospitals" onclick="showTab('hospitals',this)">
+        <i class="fas fa-hospital"></i><span>Hospitals</span>
+        <span class="nav-badge" id="badge-hospitals">0</span>
+      </a>
+      <a class="nav-link" data-tab="camps" onclick="showTab('camps',this)">
+        <i class="fas fa-campground"></i><span>Blood Camps</span>
+        <span class="nav-badge" id="badge-camps">0</span>
+      </a>
+      <a class="nav-link" data-tab="labs" onclick="showTab('labs',this)">
+        <i class="fas fa-flask"></i><span>Labs</span>
+        <span class="nav-badge" id="badge-labs">0</span>
+      </a>
+      <a class="nav-link" data-tab="messages" onclick="showTab('messages',this)">
+        <i class="fas fa-envelope"></i><span>Messages</span>
+        <span class="nav-badge urgent" id="badge-messages">0</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top:12px">Tools</div>
+      <a class="nav-link" data-tab="analytics" onclick="showTab('analytics',this)">
+        <i class="fas fa-chart-bar"></i><span>Analytics</span>
+      </a>
+      <a class="nav-link" data-tab="settings" onclick="showTab('settings',this)">
+        <i class="fas fa-cog"></i><span>Settings</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top:12px">Links</div>
+      <a class="nav-link" href="../index.html" target="_blank">
+        <i class="fas fa-external-link-alt"></i><span>View Website</span>
+      </a>
+      <a class="nav-link danger" onclick="adminLogout()">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrap" id="main-wrap">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" onclick="toggleMobileSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="topbar-title" id="topbar-title">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-time" id="topbar-time"></div>
+        <button class="topbar-btn" onclick="refreshAll()" title="Refresh data">
+          <i class="fas fa-sync-alt" id="refresh-icon"></i>
+        </button>
+        <div class="topbar-avatar" title="Admin">A</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content">
+
+      <!-- ======= DASHBOARD TAB ======= -->
+      <div class="tab-pane active" id="tab-dashboard">
+        <div class="section-header">
+          <h2>System Overview</h2>
+          <p>Real-time statistics across all BloodLinks entities</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="overview-stats"></div>
+
+        <!-- Charts Row -->
+        <div class="two-col">
+          <!-- Blood Group Distribution -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-icon" style="background:rgba(224,30,55,0.15);color:#e01e37"><i class="fas fa-tint"></i></div>
+              <div>
+                <div class="card-title">Blood Group Distribution</div>
+                <div class="card-sub">From registered donors</div>
+              </div>
+            </div>
+            <div class="blood-chart" id="blood-chart"></div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-icon" style="background:rgba(87,197,255,0.1);color:#57c5ff"><i class="fas fa-history"></i></div>
+              <div>
+                <div class="card-title">Recent Activity</div>
+                <div class="card-sub">Latest system events</div>
+              </div>
+            </div>
+            <div class="activity-list" id="activity-list"></div>
+          </div>
+        </div>
+
+        <!-- Urgent Requests -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div class="card-icon" style="background:rgba(255,100,100,0.1);color:#ff6464"><i class="fas fa-exclamation-triangle"></i></div>
+            <div>
+              <div class="card-title">Urgent / Critical Blood Requests</div>
+              <div class="card-sub">Requests needing immediate attention</div>
+            </div>
+            <button class="btn-sm btn-primary" style="margin-left:auto" onclick="showTab('requests', null)">View All</button>
+          </div>
+          <div id="urgent-requests-list" style="margin-top:4px"></div>
+        </div>
+      </div>
+
+      <!-- ======= DONORS TAB ======= -->
+      <div class="tab-pane" id="tab-donors" style="display:none">
+        <div class="section-header">
+          <h2>Donors Management</h2>
+          <p>View, search, and manage all registered donors</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="donor-search" placeholder="Search donors..." oninput="filterDonors()" />
+          </div>
+          <select class="filter-select" id="donor-bg-filter" onchange="filterDonors()">
+            <option value="">All Blood Groups</option>
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+          </select>
+          <button class="btn-primary" onclick="exportData('donors')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="table-wrap">
+            <table class="data-table" id="donors-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Name</th><th>Email</th><th>Phone</th>
+                  <th>Blood Group</th><th>City</th><th>Registered</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="donors-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= BLOOD BANKS TAB ======= -->
+      <div class="tab-pane" id="tab-bloodbanks" style="display:none">
+        <div class="section-header">
+          <h2>Blood Banks Management</h2>
+          <p>Manage registered blood banks and their verification status</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="bank-search" placeholder="Search blood banks..." oninput="filterBanks()" />
+          </div>
+          <select class="filter-select" id="bank-verified-filter" onchange="filterBanks()">
+            <option value="">All Status</option>
+            <option value="verified">Verified</option>
+            <option value="unverified">Pending</option>
+          </select>
+          <button class="btn-primary" onclick="exportData('bloodbanks')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="table-wrap">
+            <table class="data-table" id="banks-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Bank Name</th><th>Email</th><th>City</th>
+                  <th>Category</th><th>Status</th><th>Registered</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="banks-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= REQUESTS TAB ======= -->
+      <div class="tab-pane" id="tab-requests" style="display:none">
+        <div class="section-header">
+          <h2>Blood Requests</h2>
+          <p>All blood donation/transfusion requests across the platform</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="req-search" placeholder="Search requests..." oninput="filterRequests()" />
+          </div>
+          <select class="filter-select" id="req-status-filter" onchange="filterRequests()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="fulfilled">Fulfilled</option>
+          </select>
+          <select class="filter-select" id="req-urgency-filter" onchange="filterRequests()">
+            <option value="">All Urgency</option>
+            <option value="critical">Critical</option>
+            <option value="urgent">Urgent</option>
+            <option value="normal">Normal</option>
+          </select>
+          <button class="btn-primary" onclick="exportData('requests')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Patient Name</th><th>Blood Group</th><th>Units</th>
+                  <th>Urgency</th><th>City</th><th>Status</th><th>Date</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="requests-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= HOSPITALS TAB ======= -->
+      <div class="tab-pane" id="tab-hospitals" style="display:none">
+        <div class="section-header">
+          <h2>Hospitals Management</h2>
+          <p>View and manage all hospitals in the system</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="hosp-search" placeholder="Search hospitals..." oninput="filterHospitals()" />
+          </div>
+          <select class="filter-select" id="hosp-type-filter" onchange="filterHospitals()">
+            <option value="">All Types</option>
+            <option value="Government">Government</option>
+            <option value="Private">Private</option>
+          </select>
+          <button class="btn-success" onclick="openAddHospital()"><i class="fas fa-plus"></i> Add Hospital</button>
+          <button class="btn-primary" onclick="exportData('hospitals')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Hospital Name</th><th>Location</th><th>Phone</th>
+                  <th>Type</th><th>Blood Bank</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hospitals-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= CAMPS TAB ======= -->
+      <div class="tab-pane" id="tab-camps" style="display:none">
+        <div class="section-header">
+          <h2>Blood Camps Management</h2>
+          <p>Manage blood donation camps across India</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="camp-search" placeholder="Search camps..." oninput="filterCamps()" />
+          </div>
+          <button class="btn-success" onclick="openAddCamp()"><i class="fas fa-plus"></i> Add Camp</button>
+          <button class="btn-primary" onclick="exportData('camps')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Camp Name</th><th>Organization</th><th>Location</th>
+                  <th>Date</th><th>Time</th><th>Type</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="camps-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= LABS TAB ======= -->
+      <div class="tab-pane" id="tab-labs" style="display:none">
+        <div class="section-header">
+          <h2>Labs Management</h2>
+          <p>Manage diagnostic laboratories in the platform</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="lab-search" placeholder="Search labs..." oninput="filterLabs()" />
+          </div>
+          <select class="filter-select" id="lab-nabl-filter" onchange="filterLabs()">
+            <option value="">All Labs</option>
+            <option value="true">NABL Accredited</option>
+            <option value="false">Non-NABL</option>
+          </select>
+          <button class="btn-success" onclick="openAddLab()"><i class="fas fa-plus"></i> Add Lab</button>
+          <button class="btn-primary" onclick="exportData('labs')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Lab Name</th><th>Location</th><th>Phone</th>
+                  <th>Type</th><th>NABL</th><th>Hours</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="labs-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= MESSAGES TAB ======= -->
+      <div class="tab-pane" id="tab-messages" style="display:none">
+        <div class="section-header">
+          <h2>Contact Messages</h2>
+          <p>Messages received through the contact form</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="msg-search" placeholder="Search messages..." oninput="filterMessages()" />
+          </div>
+          <select class="filter-select" id="msg-status-filter" onchange="filterMessages()">
+            <option value="">All Messages</option>
+            <option value="unread">Unread</option>
+            <option value="read">Read</option>
+          </select>
+          <button class="btn-danger" onclick="clearMessages()"><i class="fas fa-trash"></i> Clear All</button>
+        </div>
+        <div class="messages-grid" id="messages-grid" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ======= ANALYTICS TAB ======= -->
+      <div class="tab-pane" id="tab-analytics" style="display:none">
+        <div class="section-header">
+          <h2>Platform Analytics</h2>
+          <p>Insights and statistics for the BloodLinks platform</p>
+        </div>
+        <div class="analytics-grid" id="analytics-content"></div>
+      </div>
+
+      <!-- ======= SETTINGS TAB ======= -->
+      <div class="tab-pane" id="tab-settings" style="display:none">
+        <div class="section-header">
+          <h2>Admin Settings</h2>
+          <p>Configure admin panel preferences and credentials</p>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-icon" style="background:rgba(87,197,255,0.1);color:#57c5ff"><i class="fas fa-key"></i></div>
+              <div><div class="card-title">Change Credentials</div><div class="card-sub">Update admin username & password</div></div>
+            </div>
+            <div class="form-group"><label class="form-lbl">New Username</label><input type="text" class="s-input" id="new-username" placeholder="New admin username" /></div>
+            <div class="form-group"><label class="form-lbl">New Password</label><input type="password" class="s-input" id="new-password" placeholder="New password" /></div>
+            <div class="form-group"><label class="form-lbl">Confirm Password</label><input type="password" class="s-input" id="confirm-password" placeholder="Confirm new password" /></div>
+            <button class="btn-primary" style="width:100%;margin-top:8px" onclick="changeCredentials()"><i class="fas fa-save"></i> Save Credentials</button>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-icon" style="background:rgba(255,100,100,0.1);color:#ff6464"><i class="fas fa-database"></i></div>
+              <div><div class="card-title">Data Management</div><div class="card-sub">Backup and reset system data</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+              <button class="btn-primary" onclick="exportAllData()"><i class="fas fa-download"></i> Export All Data (JSON)</button>
+              <button class="btn-success" onclick="seedSampleData()"><i class="fas fa-database"></i> Re-seed Sample Data</button>
+              <button class="btn-danger" onclick="clearAllData()"><i class="fas fa-trash-alt"></i> Clear All User Data</button>
+              <p style="font-size:0.78rem;color:var(--text-muted);padding-top:8px;border-top:1px solid var(--border)">
+                <i class="fas fa-info-circle" style="color:var(--primary);margin-right:6px"></i>
+                Clearing data will remove all donors, blood banks, requests and messages from localStorage.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div class="card-icon" style="background:rgba(46,204,113,0.1);color:#2ecc71"><i class="fas fa-info-circle"></i></div>
+            <div><div class="card-title">System Information</div><div class="card-sub">Platform details</div></div>
+          </div>
+          <div class="info-grid" id="system-info"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ========== MODAL ========== -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal-box" id="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <h3 id="modal-title">Modal Title</h3>
+        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay" id="confirm-overlay" onclick="closeConfirm()">
+    <div class="modal-box confirm-box" onclick="event.stopPropagation()">
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:3rem;margin-bottom:12px">⚠️</div>
+        <h3 style="color:#fff;margin-bottom:8px" id="confirm-title">Confirm Action</h3>
+        <p style="color:var(--text-secondary);font-size:0.87rem;margin-bottom:24px" id="confirm-msg">Are you sure? This cannot be undone.</p>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button class="btn-outline" onclick="closeConfirm()">Cancel</button>
+          <button class="btn-danger" id="confirm-btn" onclick="">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../data.js"></script>
+  <script src="../db.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
