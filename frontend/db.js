@@ -8,7 +8,8 @@
   // Auto-detect backend URL:
   // - In production (Vercel), set window.BLOODLINKS_API_URL before loading db.js
   // - In development, defaults to localhost:4000
-  const BACKEND_URL = window.BLOODLINKS_API_URL || 'http://localhost:4000/api';
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const BACKEND_URL = window.BLOODLINKS_API_URL || (isLocalhost ? 'http://localhost:4000/api' : 'https://bloodlinks-iykz.onrender.com/api');
 
   /* ---------- Toast Notification System ---------- */
   function showToast(msg, type) {
