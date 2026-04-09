@@ -118,7 +118,7 @@
     function g(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
     function cb(id) { return document.getElementById(id) ? document.getElementById(id).checked : false; }
 
-    function handleSubmit() {
+    async function handleSubmit() {
       var name = g('bb-name'), cat = g('bb-cat'), lic = g('bb-license');
       var addr = g('bb-address'), city = g('bb-city'), state = g('bb-state'), phone = g('bb-phone');
       var email = g('bb-email'), pass = g('bb-pass'), cpass = g('bb-cpass');
@@ -129,7 +129,6 @@
       if (pass.length < 6) { BLDb.toast('Password must be at least 6 characters.', 'error'); return; }
       if (pass !== cpass) { BLDb.toast('Passwords do not match.', 'error'); return; }
       if (!cb('bb-agree')) { BLDb.toast('Please accept the terms and conditions.', 'error'); return; }
-      if (BLDb.getBankByEmail(email)) { BLDb.toast('An account with this email already exists. Please login.', 'warning'); return; }
 
       var svc = [];
       if (cb('svc-wb')) svc.push('Whole Blood');
@@ -139,17 +138,19 @@
       if (cb('svc-cryo')) svc.push('Cryoprecipitate');
       if (cb('svc-ap')) svc.push('Apheresis');
 
-      var bank = BLDb.addBloodBank({
-        name: name, category: cat, license: lic,
-        address: addr, city: city, state: state, phone: phone,
-        email: email, password: pass,
-        hours: g('bb-hours') || '24 Hours',
-        services: svc, desc: g('bb-desc'),
-        type: 'bloodbank', location: city + ', ' + state,
-      });
-
-      BLDb.toast('🎉 Blood bank registered! Login to access your dashboard.', 'success');
-      setTimeout(function () { window.location.href = 'admin.html'; }, 2000);
+      try {
+        await BLDb.addBloodBank({
+          name: name, category: cat, license: lic,
+          address: addr, city: city, state: state, phone: phone,
+          email: email, password: pass,
+          hours: g('bb-hours') || '24 Hours',
+          services: svc, desc: g('bb-desc'),
+        });
+        BLDb.toast('🎉 Blood bank registered! Login to access your dashboard.', 'success');
+        setTimeout(function () { window.location.href = 'admin.html'; }, 2000);
+      } catch (err) {
+        BLDb.toast(err.message, 'error');
+      }
     }
   </script>
 </body>

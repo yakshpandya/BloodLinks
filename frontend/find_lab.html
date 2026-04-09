@@ -91,8 +91,7 @@
           '</div></div>';
       }).join('');
     }
-    ALL = BLDb.getLabs();
-    render();
+    (async function() { ALL = await BLDb.getLabs(); render(); })();
   </script>
 </body>
 </html>

@@ -45,14 +45,16 @@
   <script>
     BloodLinks.initPage({ active: 'camps' });
     function g(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
-    function handleSubmit() {
+    async function handleSubmit() {
       var name = g('c-name'), org = g('c-org'), type = g('c-type'), date = g('c-date'), time = g('c-time'), city = g('c-city'), state = g('c-state'), phone = g('c-phone'), addr = g('c-addr'), desc = g('c-desc');
       if (!name || !org || !type || !date || !time || !city || !state || !phone || !addr || !desc) { BLDb.toast('Please fill in all required fields.', 'error'); return; }
       var today = new Date(); today.setHours(0,0,0,0);
       if (new Date(date) < today) { BLDb.toast('Camp date cannot be in the past.', 'error'); return; }
-      BLDb.addCamp({ name: name, org: org, type: type, date: date, time: time, city: city, state: state, phone: phone, address: addr, location: city + ', ' + state, desc: desc });
-      BLDb.toast('Blood camp registered! It now appears on Find Blood Camps.', 'success');
-      setTimeout(function () { window.location.href = 'find_camp.html'; }, 1800);
+      try {
+        await BLDb.addCamp({ name: name, org: org, type: type, date: date, time: time, city: city, state: state, phone: phone, address: addr, location: city + ', ' + state, desc: desc });
+        BLDb.toast('Blood camp registered! It now appears on Find Blood Camps.', 'success');
+        setTimeout(function () { window.location.href = 'find_camp.html'; }, 1800);
+      } catch (err) { BLDb.toast('Failed to register camp.', 'error'); }
     }
     // Set min date to today
     document.getElementById('c-date').min = new Date().toISOString().split('T')[0];

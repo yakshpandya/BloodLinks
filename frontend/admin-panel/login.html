@@ -452,9 +452,8 @@
     </div>
   </div>
 
+  <script src="../db.js"></script>
   <script>
-    const ADMIN_CREDS = { username: 'admin', password: 'bloodlinks@2024' };
-
     function togglePass() {
       var inp = document.getElementById('admin-pass');
       var icon = document.getElementById('pass-icon');
@@ -470,25 +469,24 @@
       requestAnimationFrame(() => { el.style.animation = 'shake 0.4s ease'; });
     }
 
-    // Add shake animation
     var style = document.createElement('style');
     style.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }';
     document.head.appendChild(style);
 
-    function handleLogin() {
+    async function handleLogin() {
       var user = document.getElementById('admin-user').value.trim();
       var pass = document.getElementById('admin-pass').value;
       if (!user || !pass) { showError('Please fill in all fields.'); return; }
-      if (user !== ADMIN_CREDS.username || pass !== ADMIN_CREDS.password) {
-        showError('Invalid username or password. Access denied.');
+
+      try {
+        var admin = await BLDb.loginAdmin(user, pass);
+        document.getElementById('login-btn').innerHTML = '<i class="fas fa-check"></i> Access Granted! Redirecting...';
+        document.getElementById('login-btn').style.background = 'linear-gradient(135deg,#2ecc71,#1a8a4a)';
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+      } catch (err) {
+        showError(err.message || 'Invalid username or password. Access denied.');
         document.getElementById('admin-pass').value = '';
-        return;
       }
-      // Set session
-      sessionStorage.setItem('bl_admin_auth', JSON.stringify({ username: user, loginAt: new Date().toISOString() }));
-      document.getElementById('login-btn').innerHTML = '<i class="fas fa-check"></i> Access Granted! Redirecting...';
-      document.getElementById('login-btn').style.background = 'linear-gradient(135deg,#2ecc71,#1a8a4a)';
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
     }
     document.addEventListener('keydown', function (e) { if (e.key === 'Enter') handleLogin(); });
 

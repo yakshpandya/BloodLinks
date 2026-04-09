@@ -92,8 +92,7 @@
     }
 
     // Load data
-    ALL = BLDb.getHospitals();
-    render();
+    (async function() { ALL = await BLDb.getHospitals(); render(); })();
   </script>
 </body>
 </html>

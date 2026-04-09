@@ -129,7 +129,7 @@
       event.target.closest('.dash-sidebar-link').classList.add('active');
     }
 
-    function init() {
+    async function init() {
       if (!user) return;
       // Render profile card
       document.getElementById('profile-card').innerHTML = [
@@ -145,7 +145,8 @@
       ].join('');
 
       // Stats
-      var reqs = BLDb.getRequests().filter(function(r) { return r.email === user.email || r.phone === user.phone; });
+      var allReqs = await BLDb.getRequests();
+      var reqs = allReqs.filter(function(r) { return r.email === user.email || r.phone === user.phone; });
       var fulfilled = reqs.filter(function(r) { return r.status === 'fulfilled'; });
       document.getElementById('stat-requests').textContent = reqs.length;
       document.getElementById('stat-fulfilled').textContent = fulfilled.length;
@@ -162,7 +163,7 @@
         rl.innerHTML = reqs.slice().reverse().map(function(r) {
           return '<div class="req-item">' +
             '<div><div style="font-weight:700;color:var(--white)">' + r.bloodGroup + ' needed</div>' +
-            '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">' + BLDb.fmtDate(r.createdAt) + ' · #BL' + r.id + (r.hospital ? ' · ' + r.hospital : '') + '</div></div>' +
+            '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">' + BLDb.fmtDate(r.createdAt) + (r.hospital ? ' · ' + r.hospital : '') + '</div></div>' +
             '<span class="req-badge ' + r.status + '">' + r.status + '</span>' +
             '</div>';
         }).join('');

@@ -148,7 +148,7 @@
 
     function getVal(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
 
-    function handleSubmit() {
+    async function handleSubmit() {
       var fname = getVal('fname'), lname = getVal('lname');
       var phone = getVal('phone'), email = getVal('email');
       var dob = getVal('dob'), gender = getVal('gender');
@@ -164,18 +164,20 @@
       if (pass !== cpass) { BLDb.toast('Passwords do not match.', 'error'); return; }
       if (!document.getElementById('agree').checked) { BLDb.toast('Please accept the terms and conditions.', 'error'); return; }
 
-      if (currentType === 'donate') {
-        if (BLDb.getDonorByEmail(email)) { BLDb.toast('An account with this email already exists. Please login.', 'warning'); return; }
-        var donor = BLDb.addDonor({ firstName: fname, lastName: lname, name: fname + ' ' + lname, phone: phone, email: email, dob: dob, gender: gender, bloodGroup: bg.value, city: city, state: state, password: pass, type: 'donor' });
-        BLDb.login(donor);
-        BLDb.toast('Registration successful! Welcome to BloodLinks, ' + fname + '!', 'success');
-        setTimeout(function () { window.location.href = 'dashboard.html'; }, 1500);
-      } else {
-        var urgency = getVal('urgency') || 'normal';
-        var hospital = getVal('hospital');
-        var req = BLDb.addRequest({ name: fname + ' ' + lname, phone: phone, email: email, bloodGroup: bg.value, city: city, state: state, urgency: urgency, hospital: hospital });
-        BLDb.toast('Blood request submitted! ID: #BL' + req.id + '. We will contact you shortly.', 'success');
-        setTimeout(function () { window.location.href = 'find_bloodbank.html'; }, 2500);
+      try {
+        if (currentType === 'donate') {
+          var donor = await BLDb.addDonor({ firstName: fname, lastName: lname, name: fname + ' ' + lname, phone: phone, email: email, dob: dob, gender: gender, bloodGroup: bg.value, city: city, state: state, password: pass, type: 'donor' });
+          BLDb.toast('Registration successful! Welcome to BloodLinks, ' + fname + '!', 'success');
+          setTimeout(function () { window.location.href = 'dashboard.html'; }, 1500);
+        } else {
+          var urgency = getVal('urgency') || 'normal';
+          var hospital = getVal('hospital');
+          var req = await BLDb.addRequest({ name: fname + ' ' + lname, phone: phone, email: email, bloodGroup: bg.value, city: city, state: state, urgency: urgency, hospital: hospital });
+          BLDb.toast('Blood request submitted! We will contact you shortly.', 'success');
+          setTimeout(function () { window.location.href = 'find_bloodbank.html'; }, 2500);
+        }
+      } catch (err) {
+        BLDb.toast(err.message, 'error');
       }
     }
   </script>

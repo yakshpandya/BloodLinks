@@ -19,7 +19,6 @@
         <p>Sign into your BloodLinks donor account</p>
       </div>
       <div class="form-body">
-        <!-- Demo login hint -->
         <div style="background:rgba(224,30,55,0.07);border:1px solid rgba(224,30,55,0.2);border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:0.83rem;color:var(--text-secondary)">
           <i class="fas fa-info-circle" style="color:var(--primary)"></i> 
           New here? <a href="register.html" style="color:var(--primary-light);font-weight:600">Register first</a>, then login with your credentials.
@@ -38,7 +37,7 @@
         <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
           <a href="#" style="font-size:0.83rem;color:var(--primary-light)">Forgot password?</a>
         </div>
-        <button class="form-submit" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+        <button class="form-submit" id="login-btn" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
         <div class="form-divider">or</div>
         <div class="form-link">Don't have an account? <a href="register.html">Register here</a></div>
         <div class="form-link" style="margin-top:8px">Are you a blood bank? <a href="admin.html">Blood Bank Login</a></div>
@@ -49,8 +48,6 @@
   <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
   <script>
     BloodLinks.initPage({ active: '' });
-
-    // If already logged in, redirect
     if (BLDb.currentUser()) window.location.href = 'dashboard.html';
 
     function togglePass() {
@@ -60,25 +57,28 @@
       else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
     }
 
-    function handleLogin() {
+    async function handleLogin() {
       var email = document.getElementById('login-email').value.trim();
       var pass = document.getElementById('login-pass').value;
       if (!email || !pass) { BLDb.toast('Please fill in all fields.', 'error'); return; }
 
-      var donor = BLDb.getDonorByEmail(email);
-      if (!donor) { BLDb.toast('No account found with this email. Please register first.', 'error'); return; }
-      if (donor.password !== pass) { BLDb.toast('Incorrect password. Please try again.', 'error'); return; }
+      var btn = document.getElementById('login-btn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+      btn.disabled = true;
 
-      BLDb.login(donor);
-      BLDb.toast('Welcome back, ' + donor.firstName + '! Redirecting...', 'success');
-      var next = new URLSearchParams(window.location.search).get('next');
-      setTimeout(function () { window.location.href = next || 'dashboard.html'; }, 1200);
+      try {
+        var user = await BLDb.loginDonor(email, pass);
+        BLDb.toast('Welcome back, ' + user.firstName + '! Redirecting...', 'success');
+        var next = new URLSearchParams(window.location.search).get('next');
+        setTimeout(function () { window.location.href = next || 'dashboard.html'; }, 1200);
+      } catch (err) {
+        BLDb.toast(err.message, 'error');
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        btn.disabled = false;
+      }
     }
 
-    // Allow Enter key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') handleLogin();
-    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Enter') handleLogin(); });
   </script>
 </body>
 </html>

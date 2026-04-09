@@ -82,13 +82,23 @@
     </div>
   </main>
   <div id="bl-footer"></div>
-  <script src="data.js"></script><script src="nav.js"></script><script src="app.js"></script>
+  <script src="data.js"></script><script src="db.js"></script><script src="nav.js"></script><script src="app.js"></script>
   <script>
     BloodLinks.initPage({ active: '' });
-    function handleContact() {
-      const n = document.getElementById('contact-name').value;
-      if (!n) { alert('Please fill in your name.'); return; }
-      alert('✅ Message sent! We\'ll get back to you within 24 hours.');
+    async function handleContact() {
+      const n = document.getElementById('contact-name').value.trim();
+      const e = document.getElementById('contact-email').value.trim();
+      const m = document.getElementById('contact-msg').value.trim();
+      if (!n || !e || !m) { BLDb.toast('Please fill in all required fields.', 'error'); return; }
+      try {
+        await BLDb.addMessage({ name: n, email: e, message: m });
+        BLDb.toast('✅ Message sent! We\'ll get back to you within 24 hours.', 'success');
+        document.getElementById('contact-name').value = '';
+        document.getElementById('contact-email').value = '';
+        document.getElementById('contact-msg').value = '';
+      } catch (err) {
+        BLDb.toast('Failed to send message. Please try again.', 'error');
+      }
     }
   </script>
 </body>

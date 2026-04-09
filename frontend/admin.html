@@ -54,19 +54,18 @@
       else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
     }
 
-    function handleAdminLogin() {
+    async function handleAdminLogin() {
       var email = document.getElementById('admin-email').value.trim();
       var pass = document.getElementById('admin-pass').value;
       if (!email || !pass) { BLDb.toast('Please fill in all fields.', 'error'); return; }
 
-      var bank = BLDb.getBankByEmail(email);
-      if (!bank) { BLDb.toast('No blood bank found with this email. Please register first.', 'error'); return; }
-      if (bank.password !== pass) { BLDb.toast('Incorrect password.', 'error'); return; }
-
-      var user = Object.assign({}, bank, { type: 'bloodbank' });
-      BLDb.login(user);
-      BLDb.toast('Welcome back, ' + bank.name + '!', 'success');
-      setTimeout(function () { window.location.href = 'bank_dashboard.html'; }, 1200);
+      try {
+        var user = await BLDb.loginBank(email, pass);
+        BLDb.toast('Welcome back, ' + user.name + '!', 'success');
+        setTimeout(function () { window.location.href = 'bank_dashboard.html'; }, 1200);
+      } catch (err) {
+        BLDb.toast(err.message, 'error');
+      }
     }
     document.addEventListener('keydown', function(e) { if (e.key === 'Enter') handleAdminLogin(); });
   </script>

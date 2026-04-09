@@ -43,13 +43,15 @@
   <script>
     BloodLinks.initPage({ active: 'hospitals' });
     function g(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
-    function handleSubmit() {
+    async function handleSubmit() {
       var name = g('h-name'), type = g('h-type'), phone = g('h-phone'), city = g('h-city'), state = g('h-state'), addr = g('h-addr'), desc = g('h-desc');
       if (!name || !type || !phone || !city || !state || !addr || !desc) { BLDb.toast('Please fill in all required fields.', 'error'); return; }
       var bb = document.querySelector('input[name="h-bb"]:checked');
-      BLDb.addHospital({ name: name, type: type, phone: phone, city: city, state: state, address: addr, location: city + ', ' + state, bloodBank: bb && bb.value === 'true', desc: desc });
-      BLDb.toast('Hospital registered successfully! It now appears on Find Hospitals.', 'success');
-      setTimeout(function () { window.location.href = 'find_hospital.html'; }, 1800);
+      try {
+        await BLDb.addHospital({ name: name, type: type, phone: phone, city: city, state: state, address: addr, location: city + ', ' + state, bloodBank: bb && bb.value === 'true', desc: desc });
+        BLDb.toast('Hospital registered successfully! It now appears on Find Hospitals.', 'success');
+        setTimeout(function () { window.location.href = 'find_hospital.html'; }, 1800);
+      } catch (err) { BLDb.toast('Failed to register hospital.', 'error'); }
     }
   </script>
 </body>

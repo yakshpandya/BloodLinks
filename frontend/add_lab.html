@@ -44,13 +44,15 @@
   <script>
     BloodLinks.initPage({ active: 'labs' });
     function g(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
-    function handleSubmit() {
+    async function handleSubmit() {
       var name = g('l-name'), type = g('l-type'), phone = g('l-phone'), city = g('l-city'), state = g('l-state'), hours = g('l-hours'), svc = g('l-svc'), desc = g('l-desc');
       if (!name || !type || !phone || !city || !state || !hours || !svc || !desc) { BLDb.toast('Please fill in all required fields.', 'error'); return; }
       var nabl = document.querySelector('input[name="l-nabl"]:checked');
-      BLDb.addLab({ name: name, type: type, phone: phone, city: city, state: state, location: city + ', ' + state, hours: hours, services: svc, nabl: nabl && nabl.value === 'true', desc: desc });
-      BLDb.toast('Lab registered successfully! It now appears on Find Labs.', 'success');
-      setTimeout(function () { window.location.href = 'find_lab.html'; }, 1800);
+      try {
+        await BLDb.addLab({ name: name, type: type, phone: phone, city: city, state: state, location: city + ', ' + state, hours: hours, services: svc, nabl: nabl && nabl.value === 'true', desc: desc });
+        BLDb.toast('Lab registered successfully! It now appears on Find Labs.', 'success');
+        setTimeout(function () { window.location.href = 'find_lab.html'; }, 1800);
+      } catch (err) { BLDb.toast('Failed to register lab.', 'error'); }
     }
   </script>
 </body>

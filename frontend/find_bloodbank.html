@@ -191,6 +191,62 @@
   <div id="bl-footer"></div>
 
   <script src="data.js"></script>
+  <script src="db.js"></script>
   <script src="nav.js"></script>
   <script src="app.js"></script>
-  <script>BloodLinks.initPage({ active: 'blood-banks' });</script>
+  <script>
+    BloodLinks.initPage({ active: 'blood-banks' });
+    var ALL = [];
+
+    function getCatStyle(cat) {
+      var c = (cat || '').toLowerCase();
+      if (c === 'government') return 'background:rgba(46,204,113,0.12);color:#2ecc71;border:1px solid rgba(46,204,113,0.25)';
+      if (c === 'private') return 'background:rgba(90,159,255,0.12);color:#5a9fff;border:1px solid rgba(90,159,255,0.25)';
+      if (c === 'trust') return 'background:rgba(155,89,182,0.12);color:#9b59b6;border:1px solid rgba(155,89,182,0.25)';
+      return 'background:rgba(243,156,18,0.12);color:#f39c12;border:1px solid rgba(243,156,18,0.25)';
+    }
+
+    function render() {
+      var search = (document.getElementById('search-input').value || '').toLowerCase();
+      var cat = document.getElementById('category-filter').value.toLowerCase();
+      var filtered = ALL.filter(function(b) {
+        var matchSearch = !search || b.name.toLowerCase().includes(search) || (b.city || b.location || '').toLowerCase().includes(search) || (b.address || '').toLowerCase().includes(search);
+        var matchCat = !cat || (b.category || '').toLowerCase() === cat;
+        return matchSearch && matchCat;
+      });
+      var grid = document.getElementById('banks-grid');
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)"><i class="fas fa-search" style="font-size:2rem;margin-bottom:10px;opacity:0.3;display:block"></i>No blood banks found matching your criteria.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(function(b, i) {
+        var loc = b.city || b.location || '';
+        if (b.state && loc && !loc.includes(b.state)) loc += ', ' + b.state;
+        var stars = (b.rating || 4.2).toFixed(1);
+        return '<div class="bank-search-card" style="animation-delay:' + (i * 0.05) + 's">' +
+          '<div class="bsc-header">' +
+            '<span class="bsc-category" style="' + getCatStyle(b.category) + '">' + (b.category || 'General') + '</span>' +
+            '<div class="bsc-rating"><i class="fas fa-star" style="color:#f39c12;font-size:0.75rem"></i><span>' + stars + '</span></div>' +
+          '</div>' +
+          '<div class="bsc-name">' + b.name + '</div>' +
+          '<div class="bsc-location"><i class="fas fa-map-marker-alt"></i>' + (loc || 'India') + '</div>' +
+          '<div class="bsc-address">' + (b.desc || b.address || 'Registered blood bank providing blood collection and transfusion services.') + '</div>' +
+          '<div class="bsc-footer">' +
+            '<div class="bsc-reviews"><i class="fas fa-phone" style="margin-right:4px"></i>' + (b.phone || '-') + '</div>' +
+            '<div class="bsc-component ' + (b.verified ? 'yes' : 'no') + '"><i class="fas fa-' + (b.verified ? 'check-circle' : 'clock') + '"></i> ' + (b.verified ? 'Verified' : 'Pending') + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    document.getElementById('search-input').addEventListener('input', render);
+    document.getElementById('category-filter').addEventListener('change', render);
+
+    (async function() {
+      ALL = await BLDb.getRegisteredBanks();
+      // Update hero stat
+      var statEl = document.querySelector('.hero-stat-num');
+      if (statEl) statEl.innerHTML = ALL.length + '<span>+</span>';
+      render();
+    })();
+  </script>

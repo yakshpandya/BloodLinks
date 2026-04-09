@@ -118,9 +118,9 @@
       if (el) el.classList.add('active');
     }
 
-    function init() {
+    async function init() {
       if (!user) return;
-      var reqs = BLDb.getRequests();
+      var reqs = await BLDb.getRequests();
       var pending = reqs.filter(function(r) { return r.status === 'pending'; });
       var done = reqs.filter(function(r) { return r.status === 'fulfilled'; });
 
@@ -146,10 +146,10 @@
           return '<div class="req-item">' +
             '<div><div style="font-weight:700;color:var(--white)">' + r.bloodGroup + ' needed' +
             (r.urgency === 'critical' ? ' <span style="color:#e74c3c;font-size:0.75rem"> ● CRITICAL</span>' : r.urgency === 'urgent' ? ' <span style="color:#ffc107;font-size:0.75rem">⚡ URGENT</span>' : '') + '</div>' +
-            '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">' + (r.name || r.phone || '') + ' · ' + BLDb.fmtDate(r.createdAt) + ' · ' + r.city + '</div></div>' +
+            '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">' + (r.name || r.phone || '') + ' · ' + BLDb.fmtDate(r.createdAt) + ' · ' + (r.city || '') + '</div></div>' +
             '<div style="display:flex;align-items:center;gap:8px">' +
             '<span class="req-badge ' + r.status + '">' + r.status + '</span>' +
-            (r.status === 'pending' ? '<button onclick="fulfil(' + r.id + ')" style="padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:0.78rem;cursor:pointer">Fulfil</button>' : '') +
+            (r.status === 'pending' ? '<button onclick="fulfil(\'' + r._id + '\')" style="padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:0.78rem;cursor:pointer">Fulfil</button>' : '') +
             '</div></div>';
         }).join('');
       }
@@ -168,10 +168,10 @@
       }).join('');
     }
 
-    function fulfil(id) {
-      BLDb.updateRequestStatus(id, 'fulfilled');
-      BLDb.toast('Request #BL' + id + ' marked as fulfilled.', 'success');
-      init();
+    async function fulfil(id) {
+      await BLDb.updateRequestStatus(id, 'fulfilled');
+      BLDb.toast('Request marked as fulfilled.', 'success');
+      await init();
     }
 
     init();
