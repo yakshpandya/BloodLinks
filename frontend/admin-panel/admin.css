@@ -245,8 +245,7 @@ button { cursor: pointer; font-family: inherit; }
 .nav-link.active .nav-indicator { display: block; }
 
 /* Sidebar Collapsed */
-.sidebar.collapsed .sb-name,
-.sidebar.collapsed .sb-sub,
+.sidebar.collapsed .sb-brand,
 .sidebar.collapsed .admin-info,
 .sidebar.collapsed .nav-section-label,
 .sidebar.collapsed .nav-link span,
@@ -254,8 +253,7 @@ button { cursor: pointer; font-family: inherit; }
 .sidebar.collapsed .nav-link { justify-content: center; padding: 12px; }
 .sidebar.collapsed .nav-link i { width: auto; }
 .sidebar.collapsed .sidebar-admin-badge { justify-content: center; }
-.sidebar.collapsed .sidebar-header { justify-content: center; }
-.sidebar.collapsed .sb-collapse { display: none; }
+.sidebar.collapsed .sidebar-header { justify-content: center; padding-left: 0; padding-right: 0; }
 
 /* ========== TOPBAR ========== */
 .topbar {
