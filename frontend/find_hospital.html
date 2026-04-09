@@ -92,7 +92,32 @@
     }
 
     // Load data
-    (async function() { ALL = await BLDb.getHospitals(); render(); })();
+    async function loadData() {
+      document.getElementById('result-count').innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:4px"></i>Loading... (server waking up)';
+      try {
+        ALL = await BLDb.getHospitals();
+        if (ALL.length === 0) {
+          document.getElementById('result-count').textContent = 'No hospitals found';
+          document.getElementById('listing-grid').innerHTML =
+            '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">' +
+            '<i class="fas fa-hospital" style="font-size:3rem;opacity:0.2;margin-bottom:16px;display:block"></i>' +
+            '<p>Could not load hospitals. The server might be starting up.</p>' +
+            '<button onclick="loadData()" class="action-btn primary" style="margin:16px auto;display:inline-flex">' +
+            '<i class="fas fa-redo"></i> Retry</button></div>';
+        } else {
+          render();
+        }
+      } catch(e) {
+        document.getElementById('result-count').textContent = 'Failed to load';
+        document.getElementById('listing-grid').innerHTML =
+          '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">' +
+          '<i class="fas fa-exclamation-triangle" style="font-size:2rem;color:var(--primary);margin-bottom:12px;display:block"></i>' +
+          '<p>Connection failed. Please try again.</p>' +
+          '<button onclick="loadData()" class="action-btn primary" style="margin:16px auto;display:inline-flex">' +
+          '<i class="fas fa-redo"></i> Retry</button></div>';
+      }
+    }
+    loadData();
   </script>
 </body>
 </html>

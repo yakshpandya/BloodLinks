@@ -104,7 +104,21 @@
           '</div></div>';
       }).join('');
     }
-    (async function() { ALL = await BLDb.getCamps(); render(); })();
+    async function loadData() {
+      document.getElementById('result-count').innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:4px"></i>Loading...';
+      try {
+        ALL = await BLDb.getCamps();
+        render();
+      } catch(e) {
+        document.getElementById('result-count').textContent = 'Failed to load';
+        document.getElementById('listing-grid').innerHTML =
+          '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">' +
+          '<p>Connection failed. Please try again.</p>' +
+          '<button onclick="loadData()" class="action-btn primary" style="margin:16px auto;display:inline-flex">' +
+          '<i class="fas fa-redo"></i> Retry</button></div>';
+      }
+    }
+    loadData();
   </script>
 </body>
 </html>

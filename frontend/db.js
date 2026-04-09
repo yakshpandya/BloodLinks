@@ -65,9 +65,31 @@
   }
 
   /* ---------- API Helper ---------- */
-  async function apiGet(path) {
-    var res = await fetch(BACKEND_URL + path, { headers: authHeaders() });
-    return res.json();
+  function fetchWithTimeout(url, options, timeoutMs) {
+    timeoutMs = timeoutMs || 45000; // 45s to survive Render cold starts
+    return Promise.race([
+      fetch(url, options),
+      new Promise(function(_, reject) {
+        setTimeout(function() { reject(new Error('Request timed out')); }, timeoutMs);
+      })
+    ]);
+  }
+
+  async function apiGet(path, retries) {
+    retries = retries === undefined ? 1 : retries;
+    try {
+      var res = await fetchWithTimeout(BACKEND_URL + path, { headers: authHeaders() });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (err) {
+      console.warn('API GET ' + path + ' failed:', err.message);
+      if (retries > 0) {
+        // Wait 2 seconds then retry (backend probably waking up)
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        return apiGet(path, retries - 1);
+      }
+      return []; // Return empty array so pages don't crash
+    }
   }
 
   async function apiPost(path, data) {

@@ -242,11 +242,21 @@
     document.getElementById('search-input').addEventListener('input', render);
     document.getElementById('category-filter').addEventListener('change', render);
 
-    (async function() {
-      ALL = await BLDb.getRegisteredBanks();
-      // Update hero stat
-      var statEl = document.querySelector('.hero-stat-num');
-      if (statEl) statEl.innerHTML = ALL.length + '<span>+</span>';
-      render();
-    })();
+    async function loadData() {
+      var grid = document.getElementById('banks-grid');
+      try {
+        ALL = await BLDb.getRegisteredBanks();
+        // Update hero stat
+        var statEl = document.querySelector('.hero-stat-num');
+        if (statEl) statEl.innerHTML = ALL.length + '<span>+</span>';
+        render();
+      } catch(e) {
+        grid.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">' +
+          '<i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:10px;color:var(--primary);display:block"></i>' +
+          '<p>Connection failed. The backend server might be waking up.</p>' +
+          '<button onclick="loadData()" class="action-btn primary" style="margin:16px auto;display:inline-flex">' +
+          '<i class="fas fa-redo"></i> Retry</button></div>';
+      }
+    }
+    loadData();
   </script>
