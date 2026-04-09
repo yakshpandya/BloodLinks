@@ -96,6 +96,12 @@
         </div>
         <div class="mobile-menu" id="mobile-menu">
           ${mobileItems}
+          <div style="height:1px;background:var(--border);margin:8px 0"></div>
+          <a href="about.html" class="mobile-nav-link">About Us</a>
+          <a href="contact.html" class="mobile-nav-link">Contact</a>
+          <a href="admin.html" class="mobile-nav-link"><i class="fas fa-lock" style="margin-right:6px"></i> Blood Bank Login</a>
+          <a href="https://play.google.com/store/apps/details?id=com.bloodlink" target="_blank" class="mobile-nav-link"><i class="fab fa-google-play" style="margin-right:6px"></i> Download App</a>
+          <div style="height:1px;background:var(--border);margin:8px 0"></div>
           <a href="signin.html" class="mobile-nav-link highlight" id="m-login-link">Donor Login</a>
           <a href="register.html" class="mobile-nav-link highlight">Register</a>
         </div>
